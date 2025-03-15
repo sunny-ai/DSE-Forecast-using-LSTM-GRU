@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock Price Forecast</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>Stock Price Forecast</h1>
+        <div class="form-group">
+            <label for="company">Select Company:</label>
+            <select id="company">
+                <option value="GP">Company 1</option>
+                <option value="company2">Company 2</option>
+                <option value="company3">Company 3</option>
+            </select>
+            <button onclick="fetchPredictions()">Forecast</button>
+        </div>
+        <div class="charts">
+            <div class="chart-container">
+                <h2>7 Days Forecast</h2>
+                <canvas id="chart7Days"></canvas>
+            </div>
+            <div class="chart-container">
+                <h2>15 Days Forecast</h2>
+                <canvas id="chart15Days"></canvas>
+            </div>
+            <div class="chart-container">
+                <h2>30 Days Forecast</h2>
+                <canvas id="chart30Days"></canvas>
+            </div>
+        </div>
+        <div class="calendar">
+            <h2>Current Month Calendar</h2>
+            <div id="calendar"></div>
+        </div>
+    </div>
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>
