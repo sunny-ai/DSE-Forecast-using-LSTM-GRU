@@ -3,41 +3,92 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Stock Price Forecast</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <title>Stock Forecasting</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            background: linear-gradient(135deg, #6e8efb, #a777e3);
+            color: white;
+        }
+        .container {
+            margin-top: 50px;
+        }
+        .clock {
+            font-size: 20px;
+            font-weight: bold;
+        }
+        canvas {
+            background: white;
+            padding: 10px;
+            border-radius: 10px;
+        }
+    </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Stock Price Forecast</h1>
-        <div class="form-group">
-            <label for="company">Select Company:</label>
-            <select id="company">
-                <option value="GP">Company 1</option>
-                <option value="company2">Company 2</option>
-                <option value="company3">Company 3</option>
+    <div class="container text-center">
+        <h1 class="my-4">Stock Forecasting</h1>
+        <p class="clock" id="clock"></p>
+        
+        <div class="mb-3">
+            <label for="company" class="form-label">Select Company:</label>
+            <select id="company" class="form-select">
+                <option value="GP">GP</option>
+                <option value="ABBANK">ABBANK</option>
+                <option value="ACI">ACI</option>
+                <option value="BEXIMCO">BEXIMCO</option>
+                <option value="BRACBANK">BRACBANK</option>
             </select>
-            <button onclick="fetchPredictions()">Forecast</button>
         </div>
-        <div class="charts">
-            <div class="chart-container">
-                <h2>7 Days Forecast</h2>
-                <canvas id="chart7Days"></canvas>
-            </div>
-            <div class="chart-container">
-                <h2>15 Days Forecast</h2>
-                <canvas id="chart15Days"></canvas>
-            </div>
-            <div class="chart-container">
-                <h2>30 Days Forecast</h2>
-                <canvas id="chart30Days"></canvas>
-            </div>
-        </div>
-        <div class="calendar">
-            <h2>Current Month Calendar</h2>
-            <div id="calendar"></div>
+        
+        <button class="btn btn-warning" onclick="getForecast()">Get Forecast</button>
+        
+        <div class="mt-4">
+            <canvas id="chart7"></canvas>
+            <canvas id="chart15"></canvas>
+            <canvas id="chart30"></canvas>
         </div>
     </div>
-    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+
+    <script>
+        function updateClock() {
+            let now = new Date();
+            document.getElementById('clock').innerText = now.toLocaleTimeString();
+        }
+        setInterval(updateClock, 1000);
+
+        function getForecast() {
+            let company = document.getElementById("company").value;
+            fetch('/forecast', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                body: `company=${company}`
+            })
+            .then(response => response.json())
+            .then(data => {
+                renderChart('chart7', '7-Day Forecast', data['7_days']);
+                renderChart('chart15', '15-Day Forecast', data['15_days']);
+                renderChart('chart30', '30-Day Forecast', data['30_days']);
+            });
+        }
+
+        function renderChart(canvasId, title, data) {
+            let ctx = document.getElementById(canvasId).getContext('2d');
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: Array.from({ length: data.length }, (_, i) => i + 1),
+                    datasets: [{
+                        label: title,
+                        data: data,
+                        borderColor: 'white',
+                        backgroundColor: 'rgba(255, 255, 255, 0.2)',
+                        borderWidth: 2
+                    }]
+                },
+                options: { responsive: true }
+            });
+        }
+    </script>
 </body>
 </html>
