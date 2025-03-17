@@ -90,14 +90,8 @@ def predict_stock_prices(company, days=30):
     predictions = scaler.inverse_transform(np.array(predictions).reshape(-1, 1))
     return predictions.flatten()
 
-def save_plot(predictions, filename, days):
-    plt.figure(figsize=(8, 4))
-    plt.plot(predictions, marker='o', linestyle='-', label=f'Forecast ({days} days)')
-    plt.xlabel("Days")
-    plt.ylabel("Price")
-    plt.legend()
-    plt.savefig(f'static/plots/{filename}')
-    plt.close()
+
+
 
 def get_calendar():
     bd_holidays = {1: [1], 2: [21], 3: [26], 4: [14], 5: [1], 6: [], 7: [], 8: [], 9: [], 10: [], 11: [], 12: [16, 25]}
